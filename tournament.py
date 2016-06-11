@@ -20,8 +20,11 @@ def connect(database_name = "tournament"):
 def deleteMatches():
     """Remove all the match records from the database."""
     conn, c = connect()
-    c.execute("DROP TABLE matchTable CASCADE;") # need to add CASCADE at the end of DROP caluse
-    c.execute("CREATE TABLE matchTable (Name text, ID serial references playerInfo, winGame int, totalGame int);")
+    c.execute("DELETE FROM Matches CASCADE;") # need to add CASCADE at the end of DROP caluse
+    QUERY = "CREATE TABLE Matches (matchID serial, \
+                                   winner integer REFERENCES Players(ID), \
+                                   loser integer REFERENCES Players(ID));"
+    c.execute(QUERY)
     conn.commit()
     conn.close()
 
