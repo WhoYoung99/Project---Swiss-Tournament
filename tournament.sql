@@ -11,9 +11,15 @@ CREATE DATABASE tournament;
 \c tournament
 -- Enter tournament database
 
-CREATE TABLE playerInfo (
+CREATE TABLE Players (
 	Name text,
-	ID serial PRIMARY KEY
-	winGame int,
-	totalGame int
+	ID serial PRIMARY KEY,
+	winGame integer,
+	totalGame integer
+);
+
+CREATE TABLE Matches (
+	matchID serial PRIMARY KEY,
+	winner integer REFERENCES Players(ID),
+	loser integer REFERENCES Players(ID)
 );
