@@ -6,11 +6,15 @@
 import psycopg2
 
 
-def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
-    conn = psycopg2.connect("dbname=tournament")
-    cursor = conn.cursor()
-    return conn, cursor
+def connect(database_name = "tournament"):
+    """Connect to the PostgreSQL database.  Returns a database connection.
+    """
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        cursor = conn.cursor()
+        return db, cursor
+    except:
+        print("Database not exists.")
 
 
 def deleteMatches():
