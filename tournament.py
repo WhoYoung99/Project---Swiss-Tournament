@@ -6,13 +6,16 @@
 import psycopg2
 
 
-def connect(database_name = "tournament"):
+def connect(database_name=None):
     """Connect to the PostgreSQL database.  Returns a database connection.
     """
     try:
-        db = psycopg2.connect("dbname=database_name")
-        cursor = conn.cursor()
-        return db, cursor
+        if database_name == None:
+            db = psycopg2.connect("dbname=tournament")
+            cursor = db.cursor()
+            return db, cursor
+        else:
+            pass
     except:
         print("Database not exists.")
 
@@ -21,10 +24,6 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn, c = connect()
     c.execute("DELETE FROM Matches;")
-    QUERY = "CREATE TABLE Matches (matchID serial, \
-                                   winner integer REFERENCES Players(ID), \
-                                   loser integer REFERENCES Players(ID));"
-    c.execute(QUERY)
     conn.commit()
     conn.close()
 
@@ -33,7 +32,6 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn, c = connect()
     c.execute("DELETE FROM Players;")
-    c.execute("CREATE TABLE Players (Name text, ID serial PRIMARY KEY, winGame integer, totalGame integer);")
     conn.commit()
     conn.close()
 
@@ -56,12 +54,12 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    QUERY = "INSERT INTO Players VALUES (%s)"
+    QUERY = "INSERT INTO Players (Name, winGame, totalGame) VALUES (%s, 0, 0)"
     INPUT = name
     conn, c = connect()
     c.execute(QUERY, (INPUT,))
-    QUERY = "INSERT INTO Matches VALUES ( (%s), (SELECT Players.ID FROM Players where Players.Name = (%s)), 0, 0)"
-    c.execute(QUERY, (INPUT,INPUT,))
+    #QUERY = "INSERT INTO Matches VALUES ( (%s), (SELECT Players.ID FROM Players where Players.Name = (%s)), 0, 0)"
+    #c.execute(QUERY, (INPUT,INPUT,))
     conn.commit()
     conn.close()
 
@@ -81,7 +79,7 @@ def playerStandings():
     """
     conn, c = connect()
     QUERY1 = "SELECT Players.ID, Players.Name, Players.winGame, Players.totalGame "
-    QUERY2 = "FROM Players LEFT JOIN Matches ON Players.ID = Matches.ID ORDER BY Matches.winGame DESC"
+    QUERY2 = "FROM Players LEFT JOIN Matches ON Players.ID = Matches.matchID ORDER BY Players.winGame DESC"
     c.execute( QUERY1 + QUERY2)
     return c.fetchall()
     conn.close()
@@ -97,10 +95,8 @@ def reportMatch(winner, loser):
     conn, c = connect()
     QUERY_win = "UPDATE Players SET winGame = winGame + 1, totalGame = totalGame + 1 where Players.ID = (%s)"
     QUERY_los = "UPDATE Players SET totalGame = totalGame + 1 where Players.ID = (%s)"
-    winID = winner
-    losID = loser
-    c.execute(QUERY_win, (winID,))
-    c.execute(QUERY_los, (losID,))
+    c.execute(QUERY_win, (winner,))
+    c.execute(QUERY_los, (loser,))
     conn.commit()
     conn.close()
 
