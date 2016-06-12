@@ -12,6 +12,7 @@ CREATE DATABASE tournament;
 -- Enter tournament database
 
 CREATE TABLE Players (
+	-- Players table records each player's basic info.
 	Name text,
 	ID serial PRIMARY KEY,
 	winGame integer,
@@ -19,6 +20,7 @@ CREATE TABLE Players (
 );
 
 CREATE TABLE Matches (
+	-- Matches table records all matches' results.
 	matchID serial PRIMARY KEY,
 	winner integer REFERENCES Players(ID),
 	loser integer REFERENCES Players(ID)
