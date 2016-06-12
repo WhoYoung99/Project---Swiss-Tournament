@@ -10,7 +10,7 @@ def connect(database_name = "tournament"):
     """Connect to the PostgreSQL database.  Returns a database connection.
     """
     try:
-        db = psycopg2.connect("dbname={}".format(database_name))
+        db = psycopg2.connect("dbname=database_name")
         cursor = conn.cursor()
         return db, cursor
     except:
@@ -41,7 +41,7 @@ def deletePlayers():
 def countPlayers():
     """Returns the number of players currently registered."""
     conn, c = connect()
-    QUERY = "SELECT count(*) as num FROM playerInfo"
+    QUERY = "SELECT count(*) as num FROM Players"
     c.execute(QUERY)
     return c.fetchall()[0][0]
     conn.close()
@@ -56,11 +56,11 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    QUERY = "INSERT INTO playerInfo VALUES (%s)"
+    QUERY = "INSERT INTO Players VALUES (%s)"
     INPUT = name
     conn, c = connect()
     c.execute(QUERY, (INPUT,))
-    QUERY = "INSERT INTO matchTable VALUES ( (%s), (SELECT playerInfo.ID FROM playerInfo where playerInfo.Name = (%s)), 0, 0)"
+    QUERY = "INSERT INTO Matches VALUES ( (%s), (SELECT Players.ID FROM Players where Players.Name = (%s)), 0, 0)"
     c.execute(QUERY, (INPUT,INPUT,))
     conn.commit()
     conn.close()
@@ -80,8 +80,8 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     conn, c = connect()
-    QUERY1 = "SELECT playerInfo.ID, playerInfo.Name, matchTable.winGame, matchTable.totalGame "
-    QUERY2 = "FROM playerInfo LEFT JOIN matchTable ON playerInfo.ID = matchTable.ID ORDER BY matchTable.winGame DESC"
+    QUERY1 = "SELECT Players.ID, Players.Name, Players.winGame, Players.totalGame "
+    QUERY2 = "FROM Players LEFT JOIN Matches ON Players.ID = Matches.ID ORDER BY Matches.winGame DESC"
     c.execute( QUERY1 + QUERY2)
     return c.fetchall()
     conn.close()
@@ -95,8 +95,8 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
     """
     conn, c = connect()
-    QUERY_win = "UPDATE matchTable SET  winGame = winGame + 1, totalGame = totalGame + 1 where matchTable.ID = (%s)"
-    QUERY_los = "UPDATE matchTable SET  totalGame = totalGame + 1 where matchTable.ID = (%s)"
+    QUERY_win = "UPDATE Players SET winGame = winGame + 1, totalGame = totalGame + 1 where Players.ID = (%s)"
+    QUERY_los = "UPDATE Players SET totalGame = totalGame + 1 where Players.ID = (%s)"
     winID = winner
     losID = loser
     c.execute(QUERY_win, (winID,))
