@@ -117,6 +117,7 @@ def swissPairings():
         name2: the second player's name
     """
     matchOrder = playerStandings()
+    assert len(matchOrder) % 2 == 0
     matchList = []
     for i in range(0, len(matchOrder), 2):
         pairing = (matchOrder[i][0], matchOrder[i][1], matchOrder[i+1][0], matchOrder[i+1][1])
