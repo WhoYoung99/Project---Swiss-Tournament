@@ -14,7 +14,7 @@ CREATE DATABASE tournament;
 CREATE TABLE Players (
 	-- Players table records each player's basic info.
 	Name text,
-	ID serial PRIMARY KEY,
+	ID serial PRIMARY KEY
 );
 
 CREATE TABLE Matches (
@@ -27,8 +27,7 @@ CREATE TABLE Matches (
 -- create game recording view, count the number of wins by player.
 CREATE VIEW ShowRecords
 AS
-	SELECT Players.Name, Players.ID, COUNT(*) as win_game
+	SELECT Players.Name, Players.ID, COUNT(Matches) as win_game
 	FROM Players LEFT JOIN Matches
 		ON Players.ID = Matches.winner
-	GROUP BY Players.ID
-
+	GROUP BY Players.ID;
