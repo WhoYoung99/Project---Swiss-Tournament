@@ -92,10 +92,12 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
     """
     conn, c = connect()
-    QUERY_win = "UPDATE Players SET winGame = winGame + 1, totalGame = totalGame + 1 where Players.ID = (%s)"
-    QUERY_los = "UPDATE Players SET totalGame = totalGame + 1 where Players.ID = (%s)"
-    c.execute(QUERY_win, (winner,))
-    c.execute(QUERY_los, (loser,))
+    #QUERY_win = "UPDATE Players SET winGame = winGame + 1, totalGame = totalGame + 1 where Players.ID = (%s)"
+    #QUERY_los = "UPDATE Players SET totalGame = totalGame + 1 where Players.ID = (%s)"
+    #c.execute(QUERY_win, (winner,))
+    #c.execute(QUERY_los, (loser,))
+    QUERY = "INSERT INTO Matches (winner, loser) VALUES (%s, %s)"
+    c.execute(QUERY, (winner, loser), )
     conn.commit()
     conn.close()
 
