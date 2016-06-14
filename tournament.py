@@ -41,7 +41,7 @@ def countPlayers():
     conn, c = connect()
     QUERY = "SELECT count(*) as num FROM Players"
     c.execute(QUERY)
-    return c.fetchall()[0][0]
+    return c.fetchone()[0]
     conn.close()
 
 
@@ -78,9 +78,8 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     conn, c = connect()
-    QUERY1 = "SELECT Players.ID, Players.Name, Players.winGame, Players.totalGame "
-    QUERY2 = "FROM Players LEFT JOIN Matches ON Players.ID = Matches.matchID ORDER BY Players.winGame DESC"
-    c.execute( QUERY1 + QUERY2)
+    QUERY = "SELECT * from standing"
+    c.execute(QUERY)
     return c.fetchall()
     conn.close()
 

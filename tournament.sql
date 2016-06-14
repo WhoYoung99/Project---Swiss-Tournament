@@ -43,7 +43,7 @@ AS
 -- create standing view, for 'playerStandings()' usage.
 CREATE VIEW standing
 AS
-	SELECT wincounter.Name,  wincounter.ID, wincounter.wins, gamecounter.total
+	SELECT wincounter.ID, wincounter.Name, wincounter.wins, gamecounter.total
 	FROM wincounter, gamecounter
 	WHERE wincounter.ID = gamecounter.ID
 	ORDER BY wins DESC;
