@@ -24,10 +24,26 @@ CREATE TABLE Matches (
 	loser integer REFERENCES Players(ID)
 );
 
--- create game recording view, count the number of wins by player.
-CREATE VIEW ShowRecords
+-- create win recording view, count the number of wins by player.
+CREATE VIEW wincounter
 AS
-	SELECT Players.Name, Players.ID, COUNT(Matches) as win_game
+	SELECT Players.Name, Players.ID, COUNT(Matches.winner) as wins
 	FROM Players LEFT JOIN Matches
 		ON Players.ID = Matches.winner
 	GROUP BY Players.ID;
+
+-- create total game view, count the total number of games by player.
+CREATE VIEW gamecounter
+AS
+	SELECT Players.Name, Players.ID, COUNT(Matches) as total
+	FROM Players LEFT JOIN Matches
+		ON Players.ID = Matches.winner or Players.ID = Matches.loser
+	GROUP BY Players.ID;
+
+-- create standing view, for 'playerStandings()' usage.
+CREATE VIEW standing
+AS
+	SELECT wincounter.Name,  wincounter.ID, wincounter.wins, gamecounter.total
+	FROM wincounter, gamecounter
+	WHERE wincounter.ID = gamecounter.ID
+	ORDER BY wins DESC;
