@@ -124,6 +124,10 @@ def swissPairings():
         matchList.append(pairing)
     return matchList
 
-
+def showRecords():
+    conn, c = connect()
+    QUERY = "SELECT * FROM showRecords"
+    c.execute(QUERY)
+    conn.close()
 
 
