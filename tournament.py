@@ -54,7 +54,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    QUERY = "INSERT INTO Players (Name, winGame, totalGame) VALUES (%s, 0, 0)"
+    QUERY = "INSERT INTO Players (Name) VALUES (%s)"
     INPUT = name
     conn, c = connect()
     c.execute(QUERY, (INPUT,))
