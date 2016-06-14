@@ -15,8 +15,6 @@ CREATE TABLE Players (
 	-- Players table records each player's basic info.
 	Name text,
 	ID serial PRIMARY KEY,
-	winGame integer,
-	totalGame integer
 );
 
 CREATE TABLE Matches (
@@ -25,3 +23,12 @@ CREATE TABLE Matches (
 	winner integer REFERENCES Players(ID),
 	loser integer REFERENCES Players(ID)
 );
+
+-- create game recording view, count the number of wins by player.
+CREATE VIEW ShowRecords
+AS
+	SELECT Players.Name, Players.ID, COUNT(*) as win_game
+	FROM Players LEFT JOIN Matches
+		ON Players.ID = Matches.winner
+	GROUP BY Players.ID
+
